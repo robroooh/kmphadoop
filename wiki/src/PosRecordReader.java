@@ -59,8 +59,9 @@ public class PosRecordReader implements RecordReader<Text, PartialString> {
 		fsStream.skip(offset);
 		fsStream.read(BigFile, offset, patt.length());
 		
-		value.setlo(offset);
-		value.setString(BigFile.toString());
+		value.setLoInteger(offset);
+		value.setBigFile(BigFile.toString());
+		value.setParString(patt);
 		
 		offset+=patt.length();
 		

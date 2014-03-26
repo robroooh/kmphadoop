@@ -5,12 +5,12 @@ import java.util.regex.Pattern;
 
 import org.apache.hadoop.io.Writable;
 
-
 public class PartialString implements Writable {
-	
+
 	private String patString;
 	private Integer loInteger;
 	private String BigFile;
+
 	public String getBigFile() {
 		return BigFile;
 	}
@@ -19,31 +19,31 @@ public class PartialString implements Writable {
 		BigFile = bigFile;
 	}
 
-	public PartialString(String parString,Integer loInteger){
-		this.patString = parString;
+	public PartialString(String patString, Integer loInteger) {
+		this.patString = patString;
 		this.loInteger = loInteger;
 	}
-	
+
 	public void readFields(DataInput in) throws IOException {
 		// TODO Auto-generated method stub
 		String[] group = in.toString().split(",");
 		patString = group[0];
 		loInteger = Integer.parseInt(group[1]);
-		
+
 	}
 
 	public void write(DataOutput out) throws IOException {
 		// TODO Auto-generated method stub
 		out.writeUTF(this.toString());
-		
+
 	}
 
-	public String getParString() {
+	public String getPatString() {
 		return patString;
 	}
 
-	public void setParString(String parString) {
-		this.patString = parString;
+	public void setPatString(String patString) {
+		this.patString = patString;
 	}
 
 	public Integer getLoInteger() {
@@ -56,9 +56,7 @@ public class PartialString implements Writable {
 
 	@Override
 	public String toString() {
-		return patString+","+loInteger;
+		return patString + "," + loInteger;
 	}
-	
-	
 
 }

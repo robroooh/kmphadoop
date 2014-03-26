@@ -12,24 +12,21 @@ import org.apache.hadoop.mapred.Reporter;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Mapper.Context;
 
+public class MapperClass extends MapReduceBase implements
+		org.apache.hadoop.mapred.Mapper<Text, PartialString, Text, Text> {
 
-public class MapperClass extends MapReduceBase implements org.apache.hadoop.mapred.Mapper<Text, PartialString, Text, Text>{
-
-	private FileInputStream fsInputStream;
-	
 	public void map(Text key, PartialString value,
 			OutputCollector<Text, Text> output, Reporter reporter)
 			throws IOException {
 		// TODO Auto-generated method stub
-        
-        if(value.getBigFile().equals(value.getParString())){
-        	
-        	Text test = new Text(value.toString());
-        	
-        	output.collect(key, test);
-        }
+
+		if (value.getBigFile().equals(value.getPatString())) {
+
+			Text test = new Text(value.toString());
+
+			output.collect(key, test);
+			System.out.println(key.toString() + ": " + value.toString());
+		}
 	}
-	
-	
 
 }

@@ -17,7 +17,6 @@ import org.apache.hadoop.mapred.LineRecordReader;
 import org.apache.hadoop.mapred.RecordReader;
 import org.apache.hadoop.mapreduce.Job;
 
-
 public class PosRecordReader implements RecordReader<Text, PartialString> {
 
 	private LineRecordReader lineReader;
@@ -26,17 +25,16 @@ public class PosRecordReader implements RecordReader<Text, PartialString> {
 	private Integer offset = 0;
 	private FileSystem fileSys;
 	private FSDataInputStream fsStream;
-	private Scanner	scan;
+	private Scanner scan;
 	private String patt;
 	private String FileName;
-
 
 	/**
 	 * @param lineReader
 	 * @param lineKey
 	 * @param lineValue
 	 */
-	public PosRecordReader(JobConf job,FileSplit split)throws IOException {
+	public PosRecordReader(JobConf job, FileSplit split) throws IOException {
 		lineReader = new LineRecordReader(job, split);
 
 		lineKey = lineReader.createKey();
@@ -54,21 +52,22 @@ public class PosRecordReader implements RecordReader<Text, PartialString> {
 		// TODO Auto-generated method stub
 		patt = scan.nextLine();
 		byte[] BigFile = new byte[50];
-		
+		// / set here, key is filename, value contains three string, string that
+		// read from bigfile, patternString, offset
 		key.set(FileName);
 		fsStream.skip(offset);
 		fsStream.read(BigFile, offset, patt.length());
-		
+
 		value.setLoInteger(offset);
 		value.setBigFile(BigFile.toString());
-		value.setParString(patt);
-		
-		offset+=patt.length();
-		
-		if(!scan.hasNext()){
+		value.setPatString(patt);
+
+		// increment the offset
+		offset += patt.length();
+
+		if (!scan.hasNext()) {
 			return false;
-		}
-		else{
+		} else {
 			return true;
 		}
 	}

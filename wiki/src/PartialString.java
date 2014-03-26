@@ -8,7 +8,7 @@ import org.apache.hadoop.io.Writable;
 
 public class PartialString implements Writable {
 	
-	private String parString;
+	private String patString;
 	private Integer loInteger;
 	private String BigFile;
 	public String getBigFile() {
@@ -20,14 +20,14 @@ public class PartialString implements Writable {
 	}
 
 	public PartialString(String parString,Integer loInteger){
-		this.parString = parString;
+		this.patString = parString;
 		this.loInteger = loInteger;
 	}
 	
 	public void readFields(DataInput in) throws IOException {
 		// TODO Auto-generated method stub
 		String[] group = in.toString().split(",");
-		parString = group[0];
+		patString = group[0];
 		loInteger = Integer.parseInt(group[1]);
 		
 	}
@@ -39,11 +39,11 @@ public class PartialString implements Writable {
 	}
 
 	public String getParString() {
-		return parString;
+		return patString;
 	}
 
 	public void setParString(String parString) {
-		this.parString = parString;
+		this.patString = parString;
 	}
 
 	public Integer getLoInteger() {
@@ -56,7 +56,7 @@ public class PartialString implements Writable {
 
 	@Override
 	public String toString() {
-		return parString+","+loInteger;
+		return patString+","+loInteger;
 	}
 	
 	

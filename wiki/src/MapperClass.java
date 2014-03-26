@@ -17,19 +17,6 @@ public class MapperClass extends MapReduceBase implements org.apache.hadoop.mapr
 
 	private FileInputStream fsInputStream;
 	
-
-	@Override
-	public void configure(JobConf job) {
-		// TODO Auto-generated method stub
-		try {
-			fsInputStream = (FileInputStream) job.getResource("pattern").openStream();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
-
 	public void map(Text key, PartialString value,
 			OutputCollector<Text, Text> output, Reporter reporter)
 			throws IOException {

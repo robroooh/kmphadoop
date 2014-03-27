@@ -11,10 +11,6 @@ import org.apache.hadoop.mapred.Reporter;
 public class ReduceClass extends MapReduceBase implements
 		Reducer<Text, PartialString, Text, String> {
 
-	public void configure(JobConf job) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	public void close() throws IOException {
 		// TODO Auto-generated method stub

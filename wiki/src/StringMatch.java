@@ -31,7 +31,7 @@ public class StringMatch {
 			public int read() throws IOException {
 				// TODO Auto-generated method stub
 				try {
-					File f = new File(new URI("kak.txt"));
+					File f = new File(new URI("./pattern.txt"));
 				} catch (URISyntaxException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

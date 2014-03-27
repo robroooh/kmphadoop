@@ -45,7 +45,7 @@ public class PosRecordReader implements RecordReader<Text, PartialString> {
 		fsStream = fileSys.open(split.getPath());
 		FileName = split.getPath().getName();
 
-		scan = new Scanner(job.getResource("text").openStream());
+		scan = new Scanner(job.getResource("pattern").openStream());
 	}
 
 	public boolean next(Text key, PartialString value) throws IOException {

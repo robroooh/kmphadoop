@@ -74,6 +74,7 @@ public class PosRecordReader implements RecordReader<Text, PartialString> {
 
 	public Text createKey() {
 		// TODO Auto-generated method stub
+		//testkuy
 		return new Text();
 	}
 

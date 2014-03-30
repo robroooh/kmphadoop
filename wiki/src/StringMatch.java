@@ -8,6 +8,8 @@ import java.net.URL;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.filecache.DistributedCache;
+import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.FileInputFormat;
 import org.apache.hadoop.mapred.FileOutputFormat;
@@ -25,21 +27,7 @@ public class StringMatch {
 		
 		jobc.setInputFormat(PositionInputFormat.class);
 		jobc.setMapperClass((Class<? extends Mapper>) MapperClass.class);
-		jobc.addResource(new InputStream() {
 			
-			@Override
-			public int read() throws IOException {
-				// TODO Auto-generated method stub
-				try {
-					File f = new File(new URI("./pattern.txt"));
-				} catch (URISyntaxException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				return 0;
-			}
-		}, "test");
-		
 		FileInputFormat.addInputPath(jobc, new Path(args[0]));
 		FileOutputFormat.setOutputPath(jobc, new Path(args[1]));
 		

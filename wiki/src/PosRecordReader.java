@@ -28,7 +28,6 @@ public class PosRecordReader implements RecordReader<Text, PartialString> {
 	private FileSystem fileSys;
 	private FSDataInputStream fsStreamBigFile;
 	private FSDataInputStream fsStreamPatt;
-	private Scanner scan;
 	private String patt;
 	private String FileName;
 
@@ -40,14 +39,14 @@ public class PosRecordReader implements RecordReader<Text, PartialString> {
 	public PosRecordReader(JobConf job, FileSplit split) throws IOException {
 		Configuration conf = new Configuration();
 		FileSystem fs = FileSystem.get(conf);
-		
+
 		Path pattfile = new Path("hdfs://pattern.txt");
-		if(!fs.exists(pattfile)){
+		if (!fs.exists(pattfile)) {
 			System.out.println("input file not gound");
 		}
-		
+
 		fsStreamPatt = fs.open(pattfile);
-		
+
 		lineReader = new LineRecordReader(job, split);
 
 		lineKey = lineReader.createKey();
@@ -57,10 +56,7 @@ public class PosRecordReader implements RecordReader<Text, PartialString> {
 
 		fsStreamBigFile = fileSys.open(split.getPath());
 		FileName = split.getPath().getName();
-		
-		
 
-		scan = new Scanner(job.getResource("pattern").openStream());
 	}
 
 	public boolean next(Text key, PartialString value) throws IOException {
@@ -80,7 +76,7 @@ public class PosRecordReader implements RecordReader<Text, PartialString> {
 		// increment the offset
 		offset += patt.length();
 
-		if (!scan.hasNext()) {
+		if (fsStreamPatt.read() == -1) {
 			return false;
 		} else {
 			return true;
@@ -89,7 +85,7 @@ public class PosRecordReader implements RecordReader<Text, PartialString> {
 
 	public Text createKey() {
 		// TODO Auto-generated method stub
-		//testkuy
+		// testkuy
 		return new Text();
 	}
 

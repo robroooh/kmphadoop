@@ -35,7 +35,6 @@ public class PartialString implements Writable {
 	public void write(DataOutput out) throws IOException {
 		// TODO Auto-generated method stub
 		out.writeUTF(this.toString());
-
 	}
 
 	public String getPatString() {

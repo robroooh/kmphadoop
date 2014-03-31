@@ -1,5 +1,6 @@
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,6 +12,7 @@ import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FSInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.FileSplit;
@@ -21,51 +23,39 @@ import org.apache.hadoop.mapreduce.Job;
 
 public class PosRecordReader implements RecordReader<Text, PartialString> {
 
-	private LineRecordReader lineReader;
-	private LongWritable lineKey;
-	private Text lineValue;
 	private Integer offset = 0;
 	private FileSystem fileSys;
 	private FSDataInputStream fsStreamBigFile;
 	private FSDataInputStream fsStreamPatt;
+	private Scanner scan;
 	private String patt;
 	private String FileName;
-
+	
+	private FileSplit split;
+	private JobConf job;
 	/**
 	 * @param lineReader
 	 * @param lineKey
 	 * @param lineValue
 	 */
 	public PosRecordReader(JobConf job, FileSplit split) throws IOException {
-		Configuration conf = new Configuration();
-		FileSystem fs = FileSystem.get(conf);
-
-		Path pattfile = new Path("hdfs://pattern.txt");
-		if (!fs.exists(pattfile)) {
-			System.out.println("input file not gound");
-		}
-
-		fsStreamPatt = fs.open(pattfile);
-
-		lineReader = new LineRecordReader(job, split);
-
-		lineKey = lineReader.createKey();
-		lineValue = lineReader.createValue();
-
-		fileSys = split.getPath().getFileSystem(job);
-
-		fsStreamBigFile = fileSys.open(split.getPath());
-		FileName = split.getPath().getName();
-
+		this.split = split;
+		this.job = job;
+		
+		scan = new Scanner(new File("./query.txt"));
 	}
 
 	public boolean next(Text key, PartialString value) throws IOException {
-		// TODO Auto-generated method stub
-		patt = fsStreamPatt.readLine();
+
 		byte[] BigFile = new byte[50];
-		// / set here, key is filename, value contains three string, string that
-		// read from bigfile, patternString, offset
-		key.set(FileName);
+			
+		fileSys = split.getPath().getFileSystem(job);
+		fsStreamBigFile = fileSys.open(split.getPath());
+		
+		patt = scan.nextLine();
+
+		key.set(FileName); //setfilename as a key
+				
 		fsStreamBigFile.skip(offset);
 		fsStreamBigFile.read(BigFile, offset, patt.length());
 
@@ -76,7 +66,8 @@ public class PosRecordReader implements RecordReader<Text, PartialString> {
 		// increment the offset
 		offset += patt.length();
 
-		if (fsStreamPatt.read() == -1) {
+		
+		if (!scan.hasNext()) {
 			return false;
 		} else {
 			return true;
@@ -85,7 +76,7 @@ public class PosRecordReader implements RecordReader<Text, PartialString> {
 
 	public Text createKey() {
 		// TODO Auto-generated method stub
-		// testkuy
+		//testkuy
 		return new Text();
 	}
 
@@ -103,6 +94,7 @@ public class PosRecordReader implements RecordReader<Text, PartialString> {
 		// TODO Auto-generated method stub
 		fsStreamPatt.close();
 		fsStreamBigFile.close();
+		scan.close();
 	}
 
 	public float getProgress() throws IOException {

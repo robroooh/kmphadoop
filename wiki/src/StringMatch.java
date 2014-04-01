@@ -20,35 +20,29 @@ import org.apache.hadoop.mapred.Mapper;
 import org.apache.hadoop.mapred.TextOutputFormat;
 import org.apache.hadoop.mapreduce.Job;
 
-
 public class StringMatch {
 
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
-		
-		JobConf jobc = new JobConf(StringMatch.class);
-		jobc.setJobName("StringMatching");
-		
-		jobc.setMapOutputKeyClass(Text.class);
-		jobc.setMapOutputValueClass(PartialString.class);
-
-		jobc.setMapperClass(MapperClass.class);
-		jobc.setReducerClass(ReduceClass.class);
-
-		jobc.setInputFormat(PositionInputFormat.class);
-		jobc.setOutputFormat(TextOutputFormat.class);
-
-        try {
-			DistributedCache.addCacheFile(new URI("./stringlist.txt"), jobc);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println("error from distributedcache in Main");
+		if (args.length != 2) {
+			System.out.println("usage: [input] [output]");
 		}
 
-        FileInputFormat.setInputPaths(jobc, new Path(args[0]));
-        FileOutputFormat.setOutputPath(jobc, new Path(args[1]));
+		Job job = Job.getInstance(new Configuration());
+		job.setOutputKeyClass(Text.class);
+		job.setOutputValueClass(PartialString.class);
 
-        JobClient.runJob(jobc);
+		job.setMapperClass(MapperClass.class);
+		job.setReducerClass(ReduceClass.class);
+
+		job.setInputFormatClass(PositionInputFormat.class);
+		job.setOutputFormatClass(TextOutputFormat.class);
+
+		job.addCacheFile(new URI("./pattern.txt"));
+
+		FileInputFormat.setInputPaths(job, new Path(args[0]));
+		FileOutputFormat.setOutputPath(job, new Path(args[1]));
+		
+		job.submit();
 	}
 }

@@ -37,9 +37,9 @@ public class PosRecordReader extends org.apache.hadoop.mapreduce.RecordReader<Te
 	 */
 	public PosRecordReader(InputSplit split, TaskAttemptContext context) {
 		super();
-		patt = new ArrayList<String>();
-		this.split = split;
-		this.context = context;
+		patt = new ArrayList<String>();// Ohhh this is an array list
+		this.split = split; // Ohhh thi \s is a split
+		this.context = context; // Dafaq is context thing,, shittttttttt pooooo peee !!
 		try {
 			URI[] cache = context.getCacheFiles();
 			scan = new Scanner(cache[0].toURL().openStream());

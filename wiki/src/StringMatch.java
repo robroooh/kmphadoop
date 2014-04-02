@@ -9,13 +9,14 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.LazyOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 public class StringMatch {
 
 	public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
 		// TODO Auto-generated method stub
 		if (args.length != 2) {
-			System.out.println("usage: [input] [output]");
+			System.out.println("NO ARGUMENT FOUND");
 		}
 
 		Job job = Job.getInstance(new Configuration());
@@ -26,7 +27,7 @@ public class StringMatch {
 		job.setReducerClass(ReduceClass.class);
 
 		job.setInputFormatClass(PositionInputFormat.class);
-		job.setOutputFormatClass(LazyOutputFormat.class);
+		job.setOutputFormatClass(TextOutputFormat.class);
 
 		try {
 			job.addCacheFile(new URI("./pattern.txt"));
@@ -38,7 +39,9 @@ public class StringMatch {
 		
 		FileInputFormat.setInputPaths(job, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));
-		
+		System.out.println("DONE SETTING FILE IN,OUT FORMAT");
+		job.setJar("robDoop.jar");
 		job.submit();
+		System.out.println("DONE SUBMIT");
 	}
 }

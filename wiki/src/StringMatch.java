@@ -20,7 +20,7 @@ public class StringMatch {
 
 		Job job = Job.getInstance(new Configuration());
 		job.setOutputKeyClass(Text.class);
-		job.setOutputValueClass(PartialString.class);
+		job.setOutputValueClass(Text.class);
 
 		job.setMapperClass(MapperClass.class);
 		job.setReducerClass(ReduceClass.class);

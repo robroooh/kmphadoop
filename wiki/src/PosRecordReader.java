@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import org.apache.hadoop.conf.Configuration;
@@ -19,87 +20,53 @@ import org.apache.hadoop.mapred.FileSplit;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.LineRecordReader;
 import org.apache.hadoop.mapred.RecordReader;
+import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.TaskAttemptContext;
 
-public class PosRecordReader implements RecordReader<Text, PartialString> {
-
-	private Integer offset = 0;
-	private FileSystem fileSys;
-	private FSDataInputStream fsStreamBigFile;
-	private FSDataInputStream fsStreamPatt;
-	private Scanner scan;
-	private String patt;
-	private String FileName;
+public class PosRecordReader extends org.apache.hadoop.mapreduce.RecordReader<Text, PartialString> {
+	private InputSplit split;
+	private TaskAttemptContext context;
+	private ArrayList<Integer> patSize;
 	
-	private FileSplit split;
-	private JobConf job;
-	/**
-	 * @param lineReader
-	 * @param lineKey
-	 * @param lineValue
-	 */
-	public PosRecordReader(JobConf job, FileSplit split) throws IOException {
+		
+	@Override
+	public void initialize(InputSplit split, TaskAttemptContext context)
+			throws IOException, InterruptedException {
+		// TODO Auto-generated method stub
 		this.split = split;
-		this.job = job;
-		
-		scan = new Scanner(new File("./query.txt"));
+		this.context = context;
+	}
+	
+	@Override
+	public boolean nextKeyValue() throws IOException, InterruptedException {
+		return false;
+		// TODO Auto-generated method stub	
 	}
 
-	public boolean next(Text key, PartialString value) throws IOException {
-
-		byte[] BigFile = new byte[50];
-			
-		fileSys = split.getPath().getFileSystem(job);
-		fsStreamBigFile = fileSys.open(split.getPath());
-		
-		patt = scan.nextLine();
-
-		key.set(FileName); //setfilename as a key
-				
-		fsStreamBigFile.skip(offset);
-		fsStreamBigFile.read(BigFile, offset, patt.length());
-
-		value.setLoInteger(offset);
-		value.setBigFile(BigFile.toString());
-		value.setPatString(patt);
-
-		// increment the offset
-		offset += patt.length();
-
-		
-		if (!scan.hasNext()) {
-			return false;
-		} else {
-			return true;
-		}
-	}
-
-	public Text createKey() {
+	@Override
+	public Text getCurrentKey() throws IOException, InterruptedException {
 		// TODO Auto-generated method stub
-		//testkuy
-		return new Text();
+		return null;
 	}
 
-	public PartialString createValue() {
+	@Override
+	public PartialString getCurrentValue() throws IOException,
+			InterruptedException {
 		// TODO Auto-generated method stub
-		return new PartialString(patt, offset);
+		return null;
 	}
 
-	public long getPos() throws IOException {
+	@Override
+	public float getProgress() throws IOException, InterruptedException {
 		// TODO Auto-generated method stub
-		return offset;
+		return 0;
 	}
 
+	@Override
 	public void close() throws IOException {
 		// TODO Auto-generated method stub
-		fsStreamPatt.close();
-		fsStreamBigFile.close();
-		scan.close();
+		
 	}
-
-	public float getProgress() throws IOException {
-		// TODO Auto-generated method stub
-		return offset;
-	}
-
+	
 }

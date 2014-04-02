@@ -8,7 +8,6 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-import org.apache.hadoop.mapreduce.lib.output.LazyOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 
 public class StringMatch {
@@ -41,7 +40,7 @@ public class StringMatch {
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));
 		System.out.println("DONE SETTING FILE IN,OUT FORMAT");
 		job.setJar("robDoop.jar");
-		job.submit();
+		job.waitForCompletion(true);
 		System.out.println("DONE SUBMIT");
 	}
 }

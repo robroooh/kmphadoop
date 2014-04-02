@@ -15,5 +15,4 @@ public class PositionInputFormat extends FileInputFormat<Text, PartialString> {
 		
 		return new PosRecordReader(split,context);
 	}
-
 }

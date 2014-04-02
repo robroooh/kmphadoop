@@ -1,3 +1,4 @@
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -41,8 +42,9 @@ public class PosRecordReader extends org.apache.hadoop.mapreduce.RecordReader<Te
 		this.split = split; // Ohhh thi \s is a split
 		this.context = context; // Dafaq is context thing,, shittttttttt pooooo peee !!
 		try {
-			URI[] cache = context.getCacheFiles();
-			scan = new Scanner(cache[0].toURL().openStream());
+			URI[] cache = context.getCacheFiles();			
+			
+			scan = new Scanner(cache[0].getPath());
 			while(scan.hasNext()){
 				patt.add(scan.nextLine());
 			}

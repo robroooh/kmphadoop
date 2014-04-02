@@ -1,10 +1,3 @@
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
-import java.util.regex.Pattern;
-
-import org.apache.hadoop.io.Writable;
-
 public class PartialString{
 
 	private String patString;

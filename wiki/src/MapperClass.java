@@ -7,9 +7,10 @@ import org.apache.hadoop.mapreduce.Mapper;
 
 public class MapperClass extends Mapper<Text, PartialString, Text, Text> {
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void map(Text key, PartialString value,
-			org.apache.hadoop.mapreduce.Mapper.Context context)
+			Context context)
 			throws IOException, InterruptedException {
 
 		if (value.getBigFile().equals(value.getPatString())) {
@@ -17,7 +18,7 @@ public class MapperClass extends Mapper<Text, PartialString, Text, Text> {
 			Text test = new Text();
 			test.set(key.toString()+","+value.getPatString());
 			
-			context.write(test, value.getLoInteger());
+			context.write(new Text(test), new Text(value.getLoInteger().toString()));
 
 			System.out.println(key.toString() + ": " + value.getLoInteger());
 

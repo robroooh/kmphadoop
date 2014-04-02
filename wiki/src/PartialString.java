@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 import org.apache.hadoop.io.Writable;
 
-public class PartialString implements Writable {
+public class PartialString{
 
 	private String patString;
 	private Integer loInteger;
@@ -22,19 +22,6 @@ public class PartialString implements Writable {
 	public PartialString(String patString, Integer loInteger) {
 		this.patString = patString;
 		this.loInteger = loInteger;
-	}
-
-	public void readFields(DataInput in) throws IOException {
-		// TODO Auto-generated method stub
-		String[] group = in.toString().split(",");
-		patString = group[0];
-		loInteger = Integer.parseInt(group[1]);
-
-	}
-
-	public void write(DataOutput out) throws IOException {
-		// TODO Auto-generated method stub
-		out.writeUTF(this.toString());
 	}
 
 	public String getPatString() {

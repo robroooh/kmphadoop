@@ -14,11 +14,12 @@ public class MapperClass extends Mapper<Text, PartialString, Text, Text> {
 
 		if (value.getBigFile().equals(value.getPatString())) {
 
-			Text test = new Text(value.toString());
+			Text test = new Text();
+			test.set(key.toString()+","+value.getPatString());
+			
+			context.write(test, value.getLoInteger());
 
-			context.write(key, test);
-
-			System.out.println(key.toString() + ": " + value.toString());
+			System.out.println(key.toString() + ": " + value.getLoInteger());
 
 		}
 

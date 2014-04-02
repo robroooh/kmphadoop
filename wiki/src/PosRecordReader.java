@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -16,19 +17,22 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapred.FileSplit;
-import org.apache.hadoop.mapred.JobConf;
-import org.apache.hadoop.mapred.LineRecordReader;
-import org.apache.hadoop.mapred.RecordReader;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
+import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 
 public class PosRecordReader extends org.apache.hadoop.mapreduce.RecordReader<Text, PartialString> {
 	private InputSplit split;
 	private TaskAttemptContext context;
-	private ArrayList<Integer> patSize;
+	private Scanner scan;
+	private ArrayList<String> patt;
+	private int	index;
+	private int offset;
 	
+	private Text key;
+	private PartialString value;
+
 		
 	@Override
 	public void initialize(InputSplit split, TaskAttemptContext context)
@@ -38,9 +42,53 @@ public class PosRecordReader extends org.apache.hadoop.mapreduce.RecordReader<Te
 		this.context = context;
 	}
 	
+	/**
+	 * @param split
+	 * @param context
+	 */
+	public PosRecordReader(InputSplit split, TaskAttemptContext context) {
+		super();
+		patt = new ArrayList<String>();
+		this.split = split;
+		this.context = context;
+		try {
+			URI[] cache = context.getCacheFiles();
+			scan = new Scanner(cache[0].toURL().openStream());
+			while(scan.hasNext()){
+				patt.add(scan.nextLine());
+			}
+			index = 0;
+			offset = 0;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Cache File not found");
+		}
+		
+		
+	}
+
 	@Override
 	public boolean nextKeyValue() throws IOException, InterruptedException {
-		return false;
+		byte[]	buffer = new byte[patt.get(index).length()];
+
+		Path filePath = ((FileSplit)split).getPath();
+		FileSystem fSystem;
+
+		fSystem = filePath.getFileSystem(context.getConfiguration());
+		FSDataInputStream fsBigFile = fSystem.open(filePath);
+		
+		fsBigFile.read(buffer, offset, patt.get(index).length());
+
+		key.set(fSystem.getName());
+		
+		value.setPatString(patt.get(index));
+		value.setLoInteger(offset);
+		value.setBigFile(buffer.toString());
+		
+		index++;
+		offset += patt.get(index).length();
+		
+		return true;
 		// TODO Auto-generated method stub	
 	}
 

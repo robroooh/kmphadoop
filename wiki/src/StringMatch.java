@@ -7,22 +7,16 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.filecache.DistributedCache;
-import org.apache.hadoop.fs.FSDataInputStream;
-import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapred.FileInputFormat;
-import org.apache.hadoop.mapred.FileOutputFormat;
-import org.apache.hadoop.mapred.JobClient;
-import org.apache.hadoop.mapred.JobConf;
-import org.apache.hadoop.mapred.Mapper;
-import org.apache.hadoop.mapred.TextOutputFormat;
 import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.LazyOutputFormat;
 
 public class StringMatch {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, ClassNotFoundException, InterruptedException {
 		// TODO Auto-generated method stub
 		if (args.length != 2) {
 			System.out.println("usage: [input] [output]");
@@ -36,10 +30,16 @@ public class StringMatch {
 		job.setReducerClass(ReduceClass.class);
 
 		job.setInputFormatClass(PositionInputFormat.class);
-		job.setOutputFormatClass(TextOutputFormat.class);
+		job.setOutputFormatClass(LazyOutputFormat.class);
 
-		job.addCacheFile(new URI("./pattern.txt"));
-
+		try {
+			job.addCacheFile(new URI("./pattern.txt"));
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			System.out.println("HOLY FUCKING COW GOD, NO PATTERN FILE IS FOUND");
+		}
+		
+		
 		FileInputFormat.setInputPaths(job, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));
 		

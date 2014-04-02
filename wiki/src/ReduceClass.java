@@ -1,17 +1,23 @@
 import java.io.IOException;
 import java.util.Iterator;
 
+import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.Reducer.Context;
 
-public class ReduceClass extends org.apache.hadoop.mapreduce.Reducer<Text, PartialString, Text, String> {
-
-	protected void reduce(Text key, Iterable<PartialString> values,
-			org.apache.hadoop.mapreduce.Reducer.Context context)
-			throws IOException, InterruptedException {
-		
-			context.write(key, values.toString());
-	
+ public class ReduceClass
+extends Reducer<Text, Text, Text, Text> {
+	 
+	public void reduce(Text key, Iterator<Text> it,
+			Context context) throws IOException, InterruptedException {
+		StringBuilder sb = new StringBuilder();
+		while (it.hasNext()) {
+			sb.append(it.next().toString());
+			sb.append(",");
+		}
+		context.write(key, new Text(sb.toString()));
 	}
-
-
 }
+
+

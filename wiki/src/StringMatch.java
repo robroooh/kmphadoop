@@ -24,15 +24,14 @@ public class StringMatch {
 
 		job.setMapOutputKeyClass(Text.class);
 		job.setMapOutputValueClass(Text.class);
-		
+				
 		job.setMapperClass(MapperClass.class);
 		job.setReducerClass(ReduceClass.class);
 
 		job.setInputFormatClass(PositionInputFormat.class);
-		
-		job.setOutputKeyClass(Text.class);
-		job.setOutputValueClass(Text.class);
 		job.setOutputFormatClass(TextOutputFormat.class);
+		
+		job.setJar("robDoop.jar");
 
 		try {
 			job.addCacheFile(new URI("./pattern.txt"));
@@ -40,13 +39,11 @@ public class StringMatch {
 			// TODO Auto-generated catch block
 			System.out.println("HOLY FUCKING COW GOD, NO PATTERN FILE IS FOUND");
 		}
-		
-		
+				
 		FileInputFormat.setInputPaths(job, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));
-		System.out.println("DONE SETTING FILE IN,OUT FORMAT");
-		job.setJar("robDoop.jar");
+
 		job.waitForCompletion(true);
-		System.out.println("DONE SUBMIT");
+
 	}
 }

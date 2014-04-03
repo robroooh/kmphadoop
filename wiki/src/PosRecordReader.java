@@ -103,9 +103,6 @@ public class PosRecordReader extends
 			}
 			return true;
 		} else {
-			System.out.println("Current index: " + index + "pat size"
-					+ patt.size());
-			System.out.println("Byeee this is my last key,value");
 			return false;
 		}
 

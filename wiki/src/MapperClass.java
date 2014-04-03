@@ -18,10 +18,7 @@ public class MapperClass extends Mapper<Text, PartialString, Text, Text> {
 			Text test = new Text();
 			test.set(key.toString()+","+value.getPatString());
 			
-			context.write(new Text(test), new Text(value.getLoInteger().toString()));
-
-			System.out.println(key.toString() + ": " + value.getLoInteger());
-
+			context.write(test, new Text(value.getLoInteger().toString()));
 		}
 
 	}

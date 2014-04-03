@@ -22,10 +22,16 @@ public class StringMatch {
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Text.class);
 
+		job.setMapOutputKeyClass(Text.class);
+		job.setMapOutputValueClass(Text.class);
+		
 		job.setMapperClass(MapperClass.class);
 		job.setReducerClass(ReduceClass.class);
 
 		job.setInputFormatClass(PositionInputFormat.class);
+		
+		job.setOutputKeyClass(Text.class);
+		job.setOutputValueClass(Text.class);
 		job.setOutputFormatClass(TextOutputFormat.class);
 
 		try {

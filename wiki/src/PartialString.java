@@ -16,6 +16,12 @@ public class PartialString{
 		this.patString = patString;
 		this.loInteger = loInteger;
 	}
+	public PartialString() {
+		this.patString = null;
+		this.loInteger = null;
+		this.BigFile = null;
+	}
+	
 
 	public String getPatString() {
 		return patString;

@@ -1,4 +1,3 @@
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -12,18 +11,21 @@ import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 
-public class PosRecordReader extends org.apache.hadoop.mapreduce.RecordReader<Text, PartialString> {
+public class PosRecordReader extends
+		org.apache.hadoop.mapreduce.RecordReader<Text, PartialString> {
 	private InputSplit split;
 	private TaskAttemptContext context;
 	private Scanner scan;
 	private ArrayList<String> patt;
-	private int	index;
+	private int index;
 	private int offset;
-	
+	private Path filePath;
+	private byte[] buffer;
+	private FileSystem fSystem;
+	private FSDataInputStream fsBigFile;
 	private Text key;
 	private PartialString value;
 
-		
 	@Override
 	public void initialize(InputSplit split, TaskAttemptContext context)
 			throws IOException, InterruptedException {
@@ -31,81 +33,84 @@ public class PosRecordReader extends org.apache.hadoop.mapreduce.RecordReader<Te
 		this.split = split;
 		this.context = context;
 	}
-	
+
 	/**
 	 * @param split
 	 * @param context
+	 * @throws IOException 
 	 */
-	public PosRecordReader(InputSplit split, TaskAttemptContext context) {
+	public PosRecordReader(InputSplit split, TaskAttemptContext context) throws IOException {
 		super();
 		patt = new ArrayList<String>();// Ohhh this is an array list
 		this.split = split; // Ohhh thi \s is a split
-		this.context = context; // Dafaq is context thing,, shittttttttt pooooo peee !!
+		this.context = context; // Dafaq is context thing,, shittttttttt pooooo
+								// peee !!
 		try {
-			URI[] cache = context.getCacheFiles();			
-			
+			URI[] cache = context.getCacheFiles();
+
 			scan = new Scanner(cache[0].getPath());
-			while(scan.hasNext()){
+			while (scan.hasNext()) {
 				patt.add(scan.nextLine());
 			}
 			index = 0;
 			offset = 0;
+			
+			filePath = ((FileSplit) split).getPath();
+
+		fSystem = filePath.getFileSystem(context.getConfiguration());
+		fsBigFile = fSystem.open(filePath);
+		key = new Text();
+		value = new PartialString();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			System.out.println("Cache File not found");
 		}
 		
-		
 	}
 
 	@Override
 	public boolean nextKeyValue() throws IOException, InterruptedException {
-		byte[]	buffer = new byte[patt.get(index).length()];
+		if (index<patt.size()) {
+			buffer = new byte[patt.get(index).length()];
 
-		Path filePath = ((FileSplit)split).getPath();
-		FileSystem fSystem;
+			fsBigFile.read(buffer, offset, patt.get(index).length());
 
-		fSystem = filePath.getFileSystem(context.getConfiguration());
-		FSDataInputStream fsBigFile = fSystem.open(filePath);
-		
-		fsBigFile.read(buffer, offset, patt.get(index).length());
+			key.set(filePath.getName());
 
-		key.set(fSystem.getName());
+			value.setPatString(patt.get(index));
+			value.setLoInteger(offset);
+			value.setBigFile(buffer.toString());
+			
+			offset += patt.get(index).length();
+			index++;
+			buffer = null;
+			
+			return true;
+		} else {
+			return false;
+		}
 		
-		value.setPatString(patt.get(index));
-		value.setLoInteger(offset);
-		value.setBigFile(buffer.toString());
-		
-		index++;
-		offset += patt.get(index).length();
-		
-		return true;
-		// TODO Auto-generated method stub	
 	}
 
 	@Override
 	public Text getCurrentKey() throws IOException, InterruptedException {
-		// TODO Auto-generated method stub
-		return null;
+		return key;
 	}
 
 	@Override
 	public PartialString getCurrentValue() throws IOException,
 			InterruptedException {
-		// TODO Auto-generated method stub
-		return null;
+		return value;
 	}
 
 	@Override
 	public float getProgress() throws IOException, InterruptedException {
-		// TODO Auto-generated method stub
-		return 0;
+		return split.getLength() / offset;
 	}
 
 	@Override
 	public void close() throws IOException {
-		// TODO Auto-generated method stub
-		
+		scan.close();
 	}
-	
+
 }

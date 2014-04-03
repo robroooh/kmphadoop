@@ -12,7 +12,7 @@
 	<classpathentry kind="lib" path="E:/DownloadChrome/hadoop-2.2.0/hadoop-2.2.0/share/hadoop/mapreduce/hadoop-mapreduce-client-hs-2.2.0.jar"/>
 	<classpathentry kind="lib" path="E:/DownloadChrome/hadoop-2.2.0/hadoop-2.2.0/share/hadoop/mapreduce/hadoop-mapreduce-client-hs-plugins-2.2.0.jar"/>
 	<classpathentry kind="lib" path="E:/DownloadChrome/hadoop-2.2.0/hadoop-2.2.0/share/hadoop/mapreduce/hadoop-mapreduce-client-jobclient-2.2.0.jar"/>
-	<classpathentry kind="lib" path="E:/DownloadChrome/hadoop-2.2.0/hadoop-2.2.0/share/hadoop/mapreduce/hadoop-mapreduce-client-jobclient-2.2.0-tests.jar"/>
+	<classpathentry kind="lib" path="E:/DownloadChrome/hadoop-2.2.0/hadoop-2.2.0/share/hadoop/mapreduce/hadoop-mapreduce-client-jobclient-2.2.0-tests.jar" sourcepath="E:/DownloadChrome/hadoop-2.2.0/hadoop-2.2.0/share/hadoop/mapreduce/sources/hadoop-mapreduce-client-jobclient-2.2.0-test-sources.jar"/>
 	<classpathentry kind="lib" path="E:/DownloadChrome/hadoop-2.2.0/hadoop-2.2.0/share/hadoop/mapreduce/hadoop-mapreduce-client-shuffle-2.2.0.jar"/>
 	<classpathentry kind="lib" path="E:/DownloadChrome/hadoop-2.2.0/hadoop-2.2.0/share/hadoop/tools/lib/hadoop-archives-2.2.0.jar"/>
 	<classpathentry kind="lib" path="E:/DownloadChrome/hadoop-2.2.0/hadoop-2.2.0/share/hadoop/tools/lib/hadoop-datajoin-2.2.0.jar"/>

@@ -1,4 +1,10 @@
-public class PartialString{
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+
+import org.apache.hadoop.io.Writable;
+
+public class PartialString implements Writable{
 
 	private String patString;
 	private Integer loInteger;
@@ -42,6 +48,20 @@ public class PartialString{
 	@Override
 	public String toString() {
 		return patString + "," + loInteger;
+	}
+
+	public void write(DataOutput out) throws IOException {
+		System.out.println("Out Bitch");
+		out.writeChars(this.BigFile+","+this.patString+","+this.loInteger.toString());
+	}
+
+	public void readFields(DataInput in) throws IOException {
+		String[] st = in.readLine().split(",");
+		System.out.println("IN Bitch");
+		this.BigFile = st[0];
+		this.patString = st[1];
+		this.loInteger = Integer.parseInt(st[2]);
+		
 	}
 
 }

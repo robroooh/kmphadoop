@@ -1,3 +1,4 @@
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -6,9 +7,11 @@ import java.util.Scanner;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 
 public class PosRecordReader extends
@@ -25,22 +28,11 @@ public class PosRecordReader extends
 	private FSDataInputStream fsBigFile;
 	private Text key;
 	private PartialString value;
+	private int EOF;
 
 	@Override
 	public void initialize(InputSplit split, TaskAttemptContext context)
 			throws IOException, InterruptedException {
-		// TODO Auto-generated method stub
-		this.split = split;
-		this.context = context;
-	}
-
-	/**
-	 * @param split
-	 * @param context
-	 * @throws IOException 
-	 */
-	public PosRecordReader(InputSplit split, TaskAttemptContext context) throws IOException {
-		super();
 		patt = new ArrayList<String>();// Ohhh this is an array list
 		this.split = split; // Ohhh thi \s is a split
 		this.context = context; // Dafaq is context thing,, shittttttttt pooooo
@@ -48,48 +40,79 @@ public class PosRecordReader extends
 		try {
 			URI[] cache = context.getCacheFiles();
 
-			scan = new Scanner(cache[0].getPath());
+			FileInputStream fis = new FileInputStream(cache[0].getPath());
+			scan = new Scanner(fis);
 			while (scan.hasNext()) {
 				patt.add(scan.nextLine());
 			}
 			index = 0;
 			offset = 0;
-			
+
 			filePath = ((FileSplit) split).getPath();
 
-		fSystem = filePath.getFileSystem(context.getConfiguration());
-		fsBigFile = fSystem.open(filePath);
-		key = new Text();
-		value = new PartialString();
+			fSystem = filePath.getFileSystem(context.getConfiguration());
+			fsBigFile = fSystem.open(filePath);
+			System.out.println("DONE GETTING POSRECORDREADER CONSTRUCTOR");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			System.out.println("Cache File not found");
 		}
-		
+	}
+
+	/**
+	 * @param split
+	 * @param context
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public PosRecordReader(InputSplit split, TaskAttemptContext context)
+			throws IOException, InterruptedException {
+		this.initialize(split, context);
 	}
 
 	@Override
 	public boolean nextKeyValue() throws IOException, InterruptedException {
-		if (index<patt.size()) {
+		if (key == null) {
+			key = new Text();
+		}
+		if (value == null) {
+			value = new PartialString();
+		}
+
+		if (index < patt.size()) {
 			buffer = new byte[patt.get(index).length()];
 
-			fsBigFile.read(buffer, offset, patt.get(index).length());
+			EOF = fsBigFile.read(buffer, 0, patt.get(index).length());
 
 			key.set(filePath.getName());
 
 			value.setPatString(patt.get(index));
 			value.setLoInteger(offset);
-			value.setBigFile(buffer.toString());
+			value.setBigFile(new String(buffer));
+
+			System.out.println("Sending BIg File : " + new String(buffer));
+			System.out.println("Sending Pattern : " + value.getPatString());
+			System.out.println("EOF is " + EOF);
 			
-			offset += patt.get(index).length();
-			index++;
-			buffer = null;
+			offset += EOF;
 			
+			if (EOF == patt.get(index).length()) {
+				fsBigFile.seek(offset);
+				buffer = null;
+			} else {
+				fsBigFile.seek(0);
+				offset = 0;
+				index++;
+				EOF = 0;
+			}
 			return true;
 		} else {
+			System.out.println("Current index: " + index + "pat size"
+					+ patt.size());
+			System.out.println("Byeee this is my last key,value");
 			return false;
 		}
-		
+
 	}
 
 	@Override
@@ -105,7 +128,7 @@ public class PosRecordReader extends
 
 	@Override
 	public float getProgress() throws IOException, InterruptedException {
-		return split.getLength() / offset;
+		return 0;
 	}
 
 	@Override

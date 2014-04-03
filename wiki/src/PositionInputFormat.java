@@ -10,9 +10,7 @@ public class PositionInputFormat extends FileInputFormat<Text, PartialString> {
 	public org.apache.hadoop.mapreduce.RecordReader<Text, PartialString> createRecordReader(
 			org.apache.hadoop.mapreduce.InputSplit split,
 			TaskAttemptContext context) throws IOException,
-			InterruptedException {
-		context.getConfiguration().getConfResourceAsInputStream(null);
-		
+			InterruptedException {		
 		return new PosRecordReader(split,context);
 	}
 	

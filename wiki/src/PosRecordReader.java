@@ -90,11 +90,7 @@ public class PosRecordReader extends
 			value.setLoInteger(offset);
 			value.setBigFile(new String(buffer));
 
-			System.out.println("Sending BIg File : " + new String(buffer));
-			System.out.println("Sending Pattern : " + value.getPatString());
-			System.out.println("EOF is " + EOF);
-			
-			offset += EOF;
+			offset++;
 			
 			if (EOF == patt.get(index).length()) {
 				fsBigFile.seek(offset);

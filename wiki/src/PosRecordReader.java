@@ -29,7 +29,8 @@ public class PosRecordReader extends
 	private Text key;
 	private PartialString value;
 	private int EOF;
-
+	private int lenOfSplit;
+	
 	@Override
 	public void initialize(InputSplit split, TaskAttemptContext context)
 			throws IOException, InterruptedException {
@@ -52,7 +53,9 @@ public class PosRecordReader extends
 
 			fSystem = filePath.getFileSystem(context.getConfiguration());
 			fsBigFile = fSystem.open(filePath);
-			System.out.println("DONE GETTING POSRECORDREADER CONSTRUCTOR");
+			fsBigFile.seek(((FileSplit)split).getStart());
+			
+			lenOfSplit = 0;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			System.out.println("Cache File not found");
@@ -80,6 +83,7 @@ public class PosRecordReader extends
 		}
 
 		if (index < patt.size()) {
+
 			buffer = new byte[patt.get(index).length()];
 
 			EOF = fsBigFile.read(buffer, 0, patt.get(index).length());
@@ -90,16 +94,19 @@ public class PosRecordReader extends
 			value.setLoInteger(offset);
 			value.setBigFile(new String(buffer));
 
-			offset++;
+			lenOfSplit +=EOF;
 			
+			offset++;
+
 			if (EOF == patt.get(index).length()) {
 				fsBigFile.seek(offset);
 				buffer = null;
-			} else {
+			} else if (lenOfSplit == ((FileSplit)split).getLength() || EOF == -1){
 				fsBigFile.seek(0);
 				offset = 0;
 				index++;
 				EOF = 0;
+				lenOfSplit = 0;
 			}
 			return true;
 		} else {

@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.apache.hadoop.io.Writable;
 
-public class PartialString implements Writable{
+public class PartialString implements Writable {
 
 	private String patString;
 	private Integer loInteger;
@@ -22,12 +22,12 @@ public class PartialString implements Writable{
 		this.patString = patString;
 		this.loInteger = loInteger;
 	}
+
 	public PartialString() {
 		this.patString = null;
 		this.loInteger = null;
 		this.BigFile = null;
 	}
-	
 
 	public String getPatString() {
 		return patString;
@@ -51,17 +51,18 @@ public class PartialString implements Writable{
 	}
 
 	public void write(DataOutput out) throws IOException {
-		System.out.println("Out Bitch");
-		out.writeChars(this.BigFile+","+this.patString+","+this.loInteger.toString());
+		System.out.println("WRITE IS CALLED");
+		out.writeChars(this.BigFile + "," + this.patString + ","
+				+ this.loInteger.toString());
 	}
 
 	public void readFields(DataInput in) throws IOException {
 		String[] st = in.readLine().split(",");
-		System.out.println("IN Bitch");
+		System.out.println("READ IS CALLED");
 		this.BigFile = st[0];
 		this.patString = st[1];
 		this.loInteger = Integer.parseInt(st[2]);
-		
+
 	}
 
 }

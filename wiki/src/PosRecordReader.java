@@ -31,7 +31,7 @@ public class PosRecordReader extends
 	private int EOF;
 	private int lenOfSplit;
 	private StringBuilder loInteger;
-	private static final int SPLIT_LENGTH = 1024;
+	private static final int SPLIT_LENGTH = 104876+30;
 
 	@Override
 	public void initialize(InputSplit split, TaskAttemptContext context)
@@ -55,7 +55,7 @@ public class PosRecordReader extends
 			fSystem = filePath.getFileSystem(context.getConfiguration());
 			fsBigFile = fSystem.open(filePath);
 			fsBigFile.seek(((FileSplit) split).getStart());
-
+			System.out.println("get start =  " + ((FileSplit) split).getStart());
 			lenOfSplit = 0;
 
 			loInteger = new StringBuilder();
@@ -86,9 +86,9 @@ public class PosRecordReader extends
 
 		if (index < patt.size()) {
 
-			buffer = new byte[patt.get(index).length()];
+			buffer = new byte[SPLIT_LENGTH];
 
-			EOF = fsBigFile.read(buffer, 0, patt.get(index).length());
+			EOF = fsBigFile.read(buffer, 0, SPLIT_LENGTH);
 
 			key.set(filePath.getName());
 			/*

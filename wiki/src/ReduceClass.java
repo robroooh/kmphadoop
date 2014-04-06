@@ -15,15 +15,16 @@ public class ReduceClass extends Reducer<Text, Text, Text, Text> {
 
 		StringBuilder sb = new StringBuilder();
 		// System.out.println("The reduce is called");
-
 		Iterator<Text> ite = it.iterator();
-		String prefix = "";
 
-		for (Text text : it) {
-			sb.append(prefix);
-			prefix = ",";
-			sb.append(text.toString());
+		while (ite.hasNext()) {
+			sb.append(ite.next().toString());
+			sb.append(",");
 		}
-		context.write(new Text(key.toString().trim()), new Text(sb.toString()));
+		sb.deleteCharAt(sb.length()-1);
+		if (sb.length()>0) {
+			sb.deleteCharAt(sb.length()-1);
+		}
+		context.write(key, new Text(sb.toString()));
 	}
 }

@@ -86,13 +86,13 @@ public class PosRecordReader extends
 
 		if (index < patt.size()) {
 
-			buffer = new byte[SPLIT_LENGTH];
+			buffer = new byte[SPLIT_LENGTH + patt.get(index).length()-1];
 
 			// modify how long to read here
-			if (fsBigFile.available() < SPLIT_LENGTH) {
+			if (fsBigFile.available() < SPLIT_LENGTH + patt.get(index).length()-1) {
 				fsBigFile.readFully(buffer, 0, fsBigFile.available());
 			} else {
-				fsBigFile.readFully(buffer, 0, SPLIT_LENGTH);
+				fsBigFile.readFully(buffer, 0, SPLIT_LENGTH + patt.get(index).length()-1);
 			}
 			key.set(filePath.getName() + "," + patt.get(index));
 

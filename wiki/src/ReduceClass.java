@@ -18,13 +18,15 @@ public class ReduceClass extends Reducer<Text, Text, Text, Text> {
 		Iterator<Text> ite = it.iterator();
 
 		while (ite.hasNext()) {
-			sb.append(ite.next().toString());
 			sb.append(",");
+			sb.append(ite.next().toString());
 		}
-		sb.deleteCharAt(sb.length()-1);
+		
 		if (sb.length()>0) {
 			sb.deleteCharAt(sb.length()-1);
+			context.write(key, new Text(sb.toString().trim()));
+		}else{
+			context.write(key, new Text(""));
 		}
-		context.write(key, new Text(sb.toString()));
 	}
 }

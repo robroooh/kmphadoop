@@ -20,18 +20,17 @@ public class PosRecordReader extends
 	private TaskAttemptContext context;
 	private Scanner scan;
 	private ArrayList<String> patt;
-	private int index;
-	private int offset;
+	private Integer index;
 	private Path filePath;
 	private byte[] buffer;
 	private FileSystem fSystem;
 	private FSDataInputStream fsBigFile;
 	private Text key;
 	private Text value;
-	private int EOF;
-	private int lenOfSplit;
+	private Long EOF;
+	private Long lenOfSplit;
 	private StringBuilder loInteger;
-	private static final int SPLIT_LENGTH = 104876+30;
+	private static final Integer SPLIT_LENGTH = 104876+30;
 
 	@Override
 	public void initialize(InputSplit split, TaskAttemptContext context)
@@ -56,7 +55,7 @@ public class PosRecordReader extends
 			fsBigFile = fSystem.open(filePath);
 			fsBigFile.seek(((FileSplit) split).getStart());
 			System.out.println("get start =  " + ((FileSplit) split).getStart());
-			lenOfSplit = 0;
+			lenOfSplit = 0L;
 
 			loInteger = new StringBuilder();
 		} catch (IOException e) {
@@ -76,47 +75,6 @@ public class PosRecordReader extends
 		this.initialize(split, context);
 	}
 
-	public boolean _nextKeyValue() throws IOException, InterruptedException {
-		if (key == null) {
-			key = new Text();
-		}
-		if (value == null) {
-			value = new Text();
-		}
-
-		if (index < patt.size()) {
-
-			buffer = new byte[SPLIT_LENGTH];
-
-			EOF = fsBigFile.read(buffer, 0, SPLIT_LENGTH);
-
-			key.set(filePath.getName());
-			/*
-			 * value.setPatString(patt.get(index)); value.setLoInteger(offset);
-			 * value.setBigFile(new String(buffer));
-			 */
-			lenOfSplit += EOF;
-
-			offset++;
-
-			if (EOF == patt.get(index).length()) {
-				fsBigFile.seek(offset);
-				buffer = null;
-			} else if (lenOfSplit == ((FileSplit) split).getLength()
-					|| EOF == -1) {
-				fsBigFile.seek(0);
-				offset = 0;
-				index++;
-				EOF = 0;
-				lenOfSplit = 0;
-			}
-			return true;
-		} else {
-			return false;
-		}
-
-	}
-
 	@Override
 	public boolean nextKeyValue() throws IOException {
 		if (key == null) {
@@ -127,8 +85,11 @@ public class PosRecordReader extends
 		}
 
 		if (index < patt.size()) {
+			
+			buffer = new byte[SPLIT_LENGTH];
+
 			//modify how long to read here
-			EOF = fsBigFile.read(buffer, 0, SPLIT_LENGTH);
+			EOF = (long) fsBigFile.read(buffer, 0, SPLIT_LENGTH);
 
 			key.set(filePath.getName() + ", " + patt.get(index));
 
@@ -142,18 +103,19 @@ public class PosRecordReader extends
 			
 			System.out.println("len of Split = " + lenOfSplit);
 			System.out.println("EOF = " + EOF);
-			System.out.println(s);
+			//System.out.println(s);
 			
 			if (lenOfSplit == ((FileSplit) split).getLength() || EOF == -1) {
 				buffer = null;
 
-				lenOfSplit = 0;
-				EOF = 0;
+				lenOfSplit = 0L;
+				EOF = 0L;
 
 				index++;
 
 				fsBigFile.seek(((FileSplit) split).getStart());
-				
+				loInteger.setLength(0);
+				loInteger.trimToSize();
 				return true;
 			}
 
@@ -193,7 +155,6 @@ public class PosRecordReader extends
 		// pattern and text lengths
 		int ptrnLen = ptrn.length;
 		int txtLen = text.length;
-
 		// initialize new array and preprocess the pattern
 		int[] b = preProcessPattern(ptrn);
 

@@ -17,18 +17,9 @@ public class ReduceClass extends Reducer<Text, Text, Text, Text> {
 		System.out.println("The reduce is called");
 
 		Iterator<Text> ite = it.iterator();
-		ArrayList<Long> inte = new ArrayList<Long>();
-		String[] values;
-		values = ite.toString().split(",");
-		
-		for (String string : values) {
-			inte.add(Long.parseLong(string));
-		}
-		Collections.sort(inte);
-		
-		for (Long integer : inte) {
-			sb.append(integer.toString());
-			sb.append(",");	
+		for (Text text : it) {
+			sb.append(text.toString());
+			sb.append(",");
 		}
 	
 		sb.deleteCharAt(sb.length() - 1);

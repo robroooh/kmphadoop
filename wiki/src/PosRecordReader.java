@@ -28,9 +28,8 @@ public class PosRecordReader extends
 	private Text key;
 	private Text value;
 	private Long EOF;
-	private Long lenOfSplit;
 	private StringBuilder loInteger;
-	private static final Integer SPLIT_LENGTH = 104876+30;
+	private static final Integer SPLIT_LENGTH = 5632000;
 
 	@Override
 	public void initialize(InputSplit split, TaskAttemptContext context)
@@ -54,9 +53,10 @@ public class PosRecordReader extends
 			fSystem = filePath.getFileSystem(context.getConfiguration());
 			fsBigFile = fSystem.open(filePath);
 			fsBigFile.seek(((FileSplit) split).getStart());
-			System.out.println("get start =  " + ((FileSplit) split).getStart());
-			lenOfSplit = 0L;
-
+			/*
+			 * System.out .println("get start =  " + ((FileSplit)
+			 * split).getStart());
+			 */
 			loInteger = new StringBuilder();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -85,41 +85,38 @@ public class PosRecordReader extends
 		}
 
 		if (index < patt.size()) {
-			
+
 			buffer = new byte[SPLIT_LENGTH];
 
-			//modify how long to read here
-			EOF = (long) fsBigFile.read(buffer, 0, SPLIT_LENGTH);
-
-			key.set(filePath.getName() + ", " + patt.get(index));
+			// modify how long to read here
+			if (fsBigFile.available() < SPLIT_LENGTH) {
+				fsBigFile.readFully(buffer, 0, fsBigFile.available());
+			} else {
+				fsBigFile.readFully(buffer, 0, SPLIT_LENGTH);
+			}
+			key.set(filePath.getName() + "," + patt.get(index));
 
 			String s = new String(buffer);
 
 			searchSubString(s.toCharArray(), patt.get(index).toCharArray());
 
 			value.set(loInteger.toString());
-
-			lenOfSplit += EOF;
-			
-			System.out.println("len of Split = " + lenOfSplit);
-			System.out.println("EOF = " + EOF);
-			//System.out.println(s);
-			
-			if (lenOfSplit == ((FileSplit) split).getLength() || EOF == -1) {
+			// if reach to EOF
+			if (fsBigFile.available() == 0) {
 				buffer = null;
-
-				lenOfSplit = 0L;
-				EOF = 0L;
 
 				index++;
 
 				fsBigFile.seek(((FileSplit) split).getStart());
+
 				loInteger.setLength(0);
 				loInteger.trimToSize();
 				return true;
+			} else {
+				System.out.println("fsBigFile.getPos() != SPLIT_LENGTH");
 			}
 
-		}else{
+		} else {
 			return false;
 		}
 		/*

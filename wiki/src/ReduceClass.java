@@ -14,16 +14,16 @@ public class ReduceClass extends Reducer<Text, Text, Text, Text> {
 			throws IOException, InterruptedException {
 
 		StringBuilder sb = new StringBuilder();
-		System.out.println("The reduce is called");
+		// System.out.println("The reduce is called");
 
 		Iterator<Text> ite = it.iterator();
-		for (Text text : it) {
-			sb.append(text.toString());
-			sb.append(",");
-		}
-	
-		sb.deleteCharAt(sb.length() - 1);
+		String prefix = "";
 
-		context.write(key, new Text(sb.toString()));
+		for (Text text : it) {
+			sb.append(prefix);
+			prefix = ",";
+			sb.append(text.toString());
+		}
+		context.write(new Text(key.toString().trim()), new Text(sb.toString()));
 	}
 }

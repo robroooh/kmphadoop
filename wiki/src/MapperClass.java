@@ -9,7 +9,8 @@ public class MapperClass extends Mapper<Text, Text, Text, Text> {
 	@Override
 	protected void map(Text key, Text value, Context context)
 			throws IOException, InterruptedException {
-
+		//System.out.println("map is called");
+		
 		context.write(key, value);
 
 	}

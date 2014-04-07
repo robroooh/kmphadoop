@@ -29,7 +29,7 @@ public class PosRecordReader extends
 	private Text value;
 	private Long EOF;
 	private StringBuilder loInteger;
-	private static final Integer SPLIT_LENGTH = 563200;
+	private static final Integer SPLIT_LENGTH = 1048576;
 
 	@Override
 	public void initialize(InputSplit split, TaskAttemptContext context)
@@ -95,16 +95,12 @@ public class PosRecordReader extends
 				fsBigFile.readFully(buffer, 0, SPLIT_LENGTH);
 			}
 			key.set(filePath.getName() + "," + patt.get(index));
-			System.out.println("Pass Key to Map = ");
-			System.out.println(filePath.getName() + "," + patt.get(index));
 			String s = new String(buffer);
 
 			searchSubString(s.toCharArray(), patt.get(index).toCharArray());
 
 			value.set(loInteger.toString());
-			System.out.println("Pass Value to Map = ");
-			System.out.println(loInteger.toString());
-
+		
 			// if reach to EOF
 			if (fsBigFile.available() == 0) {
 				buffer = null;
@@ -117,7 +113,13 @@ public class PosRecordReader extends
 				loInteger.trimToSize();
 				return true;
 			} else {
-				System.out.println("fsBigFile.available() != 0");
+				buffer = null;
+
+				index++;
+				
+				loInteger.setLength(0);
+				loInteger.trimToSize();
+				return true;
 			}
 
 		} else {
@@ -129,7 +131,6 @@ public class PosRecordReader extends
 		 * EOF == -1) { fsBigFile.seek(0); offset = 0; index++; EOF = 0;
 		 * lenOfSplit = 0; } return true; } else { return false; }
 		 */
-		return false;
 
 	}
 

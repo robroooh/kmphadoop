@@ -14,10 +14,15 @@ public class ReduceClass extends Reducer<Text, Text, Text, Text> {
 			throws IOException, InterruptedException {
 		StringBuilder sb = new StringBuilder();
 		Iterator<Text> ite = it.iterator();
-
+		
 		while (ite.hasNext()) {
 			sb.append(ite.next().toString());
 			sb.append(",");
+			if(sb.length()>15360000){
+				context.write(key, new Text(sb.toString()));
+				sb.setLength(0);
+				sb.trimToSize();
+			}
 		}
 		sb.deleteCharAt(sb.length()-1);
 

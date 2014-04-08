@@ -29,7 +29,7 @@ public class PosRecordReader extends
 	private Text value;
 	private Long EOF;
 	private StringBuilder loInteger;
-	private static final Integer SPLIT_LENGTH = 1048576;
+	private static final Integer SPLIT_LENGTH = 15360000;
 
 	@Override
 	public void initialize(InputSplit split, TaskAttemptContext context)

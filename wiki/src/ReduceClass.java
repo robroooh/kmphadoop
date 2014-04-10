@@ -18,14 +18,12 @@ public class ReduceClass extends Reducer<Text, Text, Text, Text> {
 		while (ite.hasNext()) {
 			sb.append(ite.next().toString());
 			sb.append(",");
-			if(sb.length()>15360000){
+			if(sb.length()>1536000){
 				context.write(key, new Text(sb.toString()));
 				sb.setLength(0);
 				sb.trimToSize();
 			}
 		}
-		sb.deleteCharAt(sb.length()-1);
-
 		context.write(key, new Text(sb.toString()));
 	}
 }

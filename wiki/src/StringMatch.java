@@ -28,9 +28,12 @@ public class StringMatch {
 				
 		job.setMapperClass(MapperClass.class);
 		job.setReducerClass(ReduceClass.class);
-
+		
+		
 		job.setInputFormatClass(PositionInputFormat.class);
 		job.setOutputFormatClass(TextOutputFormat.class);
+
+		job.getConfiguration().set("mapreduce.output.textoutputformat.separator", ",");
 		
 		job.setJar("robDoop.jar");
 

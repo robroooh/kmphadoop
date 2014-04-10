@@ -2,6 +2,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import org.apache.hadoop.io.Text;
@@ -15,6 +16,8 @@ public class MapperClass extends Mapper<Text, Text, Text, Text> {
 	private ArrayList<String> patt;
 	private ArrayList<Integer> loInteger;
 	private Scanner scan;
+
+	private static final Integer SPLIT_LENGTH = 15360000 + 99;
 
 	@Override
 	protected void setup(Context context) throws IOException,
@@ -79,6 +82,7 @@ public class MapperClass extends Mapper<Text, Text, Text, Text> {
 
 	public void searchSubString(char[] text, char[] ptrn) {
 		loInteger = new ArrayList<Integer>();
+		text = Arrays.copyOf(text, SPLIT_LENGTH-99 + ptrn.length-1);
 		int i = 0, j = 0;
 		// pattern and text lengths
 		int ptrnLen = ptrn.length;
@@ -95,7 +99,6 @@ public class MapperClass extends Mapper<Text, Text, Text, Text> {
 
 			// a match is found
 			if (j == ptrnLen) {
-				// System.out.println("LOinteger = " + (i - ptrnLen));
 				loInteger.add(i - ptrnLen);
 				j = b[j];
 			}

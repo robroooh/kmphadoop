@@ -21,14 +21,14 @@ public class MapperClass extends Mapper<Text, Text, Text, Text> {
 	@Override
 	protected void setup(Context context) throws IOException,
 			InterruptedException {
-		
+
 		patt = new ArrayList<String>();
 
 		URI[] cache = context.getCacheFiles();
 
 		FileInputStream fis = new FileInputStream(cache[0].getPath());
 		scan = new Scanner(fis);
-		
+
 		while (scan.hasNext()) {
 			patt.add(scan.nextLine());
 		}
@@ -42,13 +42,13 @@ public class MapperClass extends Mapper<Text, Text, Text, Text> {
 
 			searchSubString(value.toString().toCharArray(), patt.get(index)
 					.toCharArray());
-						
+
 			if (loInteger.size() > 0) {
 				for (int i = 0; i < loInteger.size(); i++) {
 					context.write(
 							new Text(key.toString() + "," + patt.get(index)),
 							new Text(loInteger.get(i).toString()));
-					
+
 				}
 			} else {
 				context.write(new Text(key.toString() + "," + patt.get(index)),
@@ -78,12 +78,11 @@ public class MapperClass extends Mapper<Text, Text, Text, Text> {
 
 	public void searchSubString(char[] text, char[] ptrn) {
 		loInteger = new ArrayList<Integer>();
-		text = Arrays.copyOf(text, SPLIT_LENGTH-99 + ptrn.length-1);
+		text = Arrays.copyOf(text, SPLIT_LENGTH - 99 + ptrn.length - 1);
+
 		int i = 0, j = 0;
-		// pattern and text lengths
 		int ptrnLen = ptrn.length;
 		int txtLen = text.length;
-		// initialize new array and preprocess the pattern
 		int[] b = preProcessPattern(ptrn);
 
 		while (i < txtLen) {
@@ -93,7 +92,6 @@ public class MapperClass extends Mapper<Text, Text, Text, Text> {
 			i++;
 			j++;
 
-			// a match is found
 			if (j == ptrnLen) {
 				loInteger.add(i - ptrnLen);
 				j = b[j];

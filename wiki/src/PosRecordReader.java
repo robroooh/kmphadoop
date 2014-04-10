@@ -24,7 +24,6 @@ public class PosRecordReader extends
 	private byte[] buffer;
 	private FileSystem fSystem;
 	private FSDataInputStream fsBigFile;
-	private DataInputStream daBigFile;
 	private Text key;
 	private Text value;
 	private int flag = 0;
@@ -70,10 +69,7 @@ public class PosRecordReader extends
 
 			try {
 				fsBigFile.readFully(buffer, 0, SPLIT_LENGTH);
-			} catch (EOFException e) {
-				// TODO: handle exception
-				
-			}
+			} catch (EOFException e) {}
 
 			key.set(filePath.getName());
 

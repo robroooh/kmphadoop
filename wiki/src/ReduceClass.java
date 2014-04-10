@@ -12,17 +12,21 @@ public class ReduceClass extends Reducer<Text, Text, Text, Text> {
 
 	public void reduce(Text key, Iterable<Text> it, Context context)
 			throws IOException, InterruptedException {
+		
 		StringBuilder sb = new StringBuilder();
 		Iterator<Text> ite = it.iterator();
-		
+
 		while (ite.hasNext()) {
 			sb.append(ite.next().toString());
 			sb.append(",");
+			
 			if(sb.length()>1536000){
 				context.write(key, new Text(sb.toString()));
 				sb.setLength(0);
 				sb.trimToSize();
+			
 			}
+		
 		}
 		context.write(key, new Text(sb.toString()));
 	}

@@ -1,3 +1,5 @@
+import java.io.DataInputStream;
+import java.io.EOFException;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
@@ -22,11 +24,12 @@ public class PosRecordReader extends
 	private byte[] buffer;
 	private FileSystem fSystem;
 	private FSDataInputStream fsBigFile;
+	private DataInputStream daBigFile;
 	private Text key;
 	private Text value;
 	private int flag = 0;
 
-	private static final Integer SPLIT_LENGTH = 15360000 + 99;
+	private static final Integer SPLIT_LENGTH = 16777216 + 99;
 
 	@Override
 	public void initialize(InputSplit split, TaskAttemptContext context)
@@ -65,11 +68,13 @@ public class PosRecordReader extends
 
 			buffer = new byte[SPLIT_LENGTH];
 
-			if (fsBigFile.available() < SPLIT_LENGTH) {
-				fsBigFile.readFully(buffer, 0, fsBigFile.available());
-			} else {
+			try {
 				fsBigFile.readFully(buffer, 0, SPLIT_LENGTH);
+			} catch (EOFException e) {
+				// TODO: handle exception
+				
 			}
+
 			key.set(filePath.getName());
 
 			value.set(buffer);

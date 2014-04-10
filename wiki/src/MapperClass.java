@@ -12,23 +12,23 @@ import org.omg.CORBA.PRIVATE_MEMBER;
 
 public class MapperClass extends Mapper<Text, Text, Text, Text> {
 
-	@SuppressWarnings("unchecked")
 	private ArrayList<String> patt;
 	private ArrayList<Integer> loInteger;
 	private Scanner scan;
 
-	private static final Integer SPLIT_LENGTH = 15360000 + 99;
+	private static final Integer SPLIT_LENGTH = 16777216 + 99;
 
 	@Override
 	protected void setup(Context context) throws IOException,
 			InterruptedException {
-		// TODO Auto-generated method stub
+		
 		patt = new ArrayList<String>();
 
 		URI[] cache = context.getCacheFiles();
 
 		FileInputStream fis = new FileInputStream(cache[0].getPath());
 		scan = new Scanner(fis);
+		
 		while (scan.hasNext()) {
 			patt.add(scan.nextLine());
 		}
@@ -38,21 +38,17 @@ public class MapperClass extends Mapper<Text, Text, Text, Text> {
 	@Override
 	protected void map(Text key, Text value, Context context)
 			throws IOException, InterruptedException {
-		// System.out.println("map is called");
 		for (int index = 0; index < patt.size(); index++) {
 
 			searchSubString(value.toString().toCharArray(), patt.get(index)
 					.toCharArray());
-			
-			//System.out.println("loInteger.size() = " + loInteger.size());
-			
+						
 			if (loInteger.size() > 0) {
 				for (int i = 0; i < loInteger.size(); i++) {
 					context.write(
 							new Text(key.toString() + "," + patt.get(index)),
 							new Text(loInteger.get(i).toString()));
 					
-				//	System.out.println("i in for loop = " + i);
 				}
 			} else {
 				context.write(new Text(key.toString() + "," + patt.get(index)),

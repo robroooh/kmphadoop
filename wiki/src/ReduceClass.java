@@ -15,20 +15,21 @@ public class ReduceClass extends Reducer<Text, Text, Text, Text> {
 
 		StringBuilder sb = new StringBuilder();
 		Iterator<Text> ite = it.iterator();
-		boolean flag = false;
 
 		while (ite.hasNext()) {
-			if (flag != false) {
-				sb.append(",");
-			}
 			sb.append(ite.next());
-			flag = false;
-
+			sb.append(",");
+			
 			if (sb.length() > 1536000) {
+				sb.deleteCharAt(sb.length() - 1);
 				context.write(key, new Text(sb.toString()));
 				sb.setLength(0);
 				sb.trimToSize();
 			}
+		}
+		if (sb.length() > 0) {
+			sb.deleteCharAt(sb.length() - 1);
+
 		}
 		context.write(key, new Text(sb.toString()));
 

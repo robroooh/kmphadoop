@@ -28,7 +28,7 @@ public class PosRecordReader extends
 	private Text value;
 	private int flag = 0;
 
-	private static final Integer SPLIT_LENGTH = 16777216 + 99;
+	private static final Integer SPLIT_LENGTH = 4 + 99;
 
 	@Override
 	public void initialize(InputSplit split, TaskAttemptContext context)

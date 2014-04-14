@@ -16,7 +16,7 @@ public class ReduceClass extends Reducer<Text, Text, Text, Text> {
 		StringBuilder sb = new StringBuilder();
 		Iterator<Text> ite = it.iterator();
 
-		while (ite.hasNext()) {
+		while (ite.hasNext() && ite.next() instanceof Text) {
 			sb.append(ite.next());
 			sb.append(",");
 			
@@ -29,9 +29,13 @@ public class ReduceClass extends Reducer<Text, Text, Text, Text> {
 		}
 		if (sb.length() > 0) {
 			sb.deleteCharAt(sb.length() - 1);
-
+			context.write(key, new Text(sb.toString()));
 		}
-		context.write(key, new Text(sb.toString()));
+		else{
+			context.write(key, new Text());
+		}
+		
+		
 
 	}
 }

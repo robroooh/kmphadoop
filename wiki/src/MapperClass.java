@@ -8,20 +8,24 @@ import java.util.Scanner;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Mapper.Context;
+import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 import org.omg.CORBA.PRIVATE_MEMBER;
 
 public class MapperClass extends Mapper<Text, Text, Text, Text> {
 
 	private ArrayList<String> patt;
-	private ArrayList<Integer> loInteger;
+	private ArrayList<Long> loInteger;
 	private Scanner scan;
+	private Context context;
+	private long splitStart;
 
-	private static final Integer SPLIT_LENGTH = 16777216 + 99;
+	private static final Integer SPLIT_LENGTH = 4 + 99;
 
 	@Override
 	protected void setup(Context context) throws IOException,
 			InterruptedException {
 
+		this.context = context;
 		patt = new ArrayList<String>();
 
 		URI[] cache = context.getCacheFiles();
@@ -32,6 +36,7 @@ public class MapperClass extends Mapper<Text, Text, Text, Text> {
 		while (scan.hasNext()) {
 			patt.add(scan.nextLine());
 		}
+		splitStart = ((FileSplit)context.getInputSplit()).getStart();
 
 	}
 
@@ -77,7 +82,7 @@ public class MapperClass extends Mapper<Text, Text, Text, Text> {
 	}
 
 	public void searchSubString(char[] text, char[] ptrn) {
-		loInteger = new ArrayList<Integer>();
+		loInteger = new ArrayList<Long>();
 		text = Arrays.copyOf(text, SPLIT_LENGTH - 99 + ptrn.length - 1);
 
 		int i = 0, j = 0;
@@ -92,8 +97,8 @@ public class MapperClass extends Mapper<Text, Text, Text, Text> {
 			i++;
 			j++;
 
-			if (j == ptrnLen) {
-				loInteger.add(i - ptrnLen);
+			if (j == ptrnLen) { //match occurs here 
+				loInteger.add(splitStart + (i - ptrnLen));
 				j = b[j];
 			}
 		}

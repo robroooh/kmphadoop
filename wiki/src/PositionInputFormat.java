@@ -55,7 +55,7 @@ public class PositionInputFormat extends FileInputFormat<Text, Text> {
 					long blockSize = file.getBlockSize();
 					// long splitSize = computeSplitSize(blockSize, minSize,
 					// maxSize);
-					long splitSize = 16777216;
+					long splitSize = 4;
 
 					long bytesRemaining = length;
 					while (((double) bytesRemaining) / splitSize > SPLIT_SLOP) {

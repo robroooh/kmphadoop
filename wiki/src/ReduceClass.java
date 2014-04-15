@@ -15,13 +15,9 @@ public class ReduceClass extends Reducer<Text, Text, Text, Text> {
 
 		StringBuilder sb = new StringBuilder();
 		Iterator<Text> ite = it.iterator();
-		
-		ite.next();
-		
+
 		while (ite.hasNext()) {
 			sb.append(ite.next());
-			sb.append(",");
-			
 			if (sb.length() > 1536000) {
 				sb.deleteCharAt(sb.length() - 1);
 				context.write(key, new Text(sb.toString()));

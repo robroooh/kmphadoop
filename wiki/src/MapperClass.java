@@ -20,7 +20,7 @@ public class MapperClass extends Mapper<Text, Text, Text, Text> {
 	private Context context;
 	private long splitStart;
 
-	private static final Integer SPLIT_LENGTH = 26214400 + 99;
+	private static final Integer SPLIT_LENGTH = 33550000 + 99;
 
 	@Override
 	protected void setup(Context context) throws IOException,
@@ -53,7 +53,7 @@ public class MapperClass extends Mapper<Text, Text, Text, Text> {
 				for (int i = 0; i < loInteger.size(); i++) {
 					context.write(
 							new Text(key.toString() + "," + patt.get(index)),
-							new Text(loInteger.get(i).toString()));
+							new Text(loInteger.get(i).toString() + ","));
 
 				}
 			} else {

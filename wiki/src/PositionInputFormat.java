@@ -19,7 +19,6 @@ public class PositionInputFormat extends FileInputFormat<Text, Text> {
 
 	private static final Log LOG = LogFactory.getLog(FileInputFormat.class);
 	private static final double SPLIT_SLOP = 1.1;
-	
 
 	@Override
 	public org.apache.hadoop.mapreduce.RecordReader<Text, Text> createRecordReader(
@@ -55,7 +54,7 @@ public class PositionInputFormat extends FileInputFormat<Text, Text> {
 					long blockSize = file.getBlockSize();
 					// long splitSize = computeSplitSize(blockSize, minSize,
 					// maxSize);
-					long splitSize = 4;
+					long splitSize = 33550000;
 
 					long bytesRemaining = length;
 					while (((double) bytesRemaining) / splitSize > SPLIT_SLOP) {

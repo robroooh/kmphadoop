@@ -15,8 +15,10 @@ public class ReduceClass extends Reducer<Text, Text, Text, Text> {
 
 		StringBuilder sb = new StringBuilder();
 		Iterator<Text> ite = it.iterator();
-
-		while (ite.hasNext() && ite.next() instanceof Text) {
+		
+		ite.next();
+		
+		while (ite.hasNext()) {
 			sb.append(ite.next());
 			sb.append(",");
 			

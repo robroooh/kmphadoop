@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Mapper.Context;
@@ -19,7 +20,7 @@ public class MapperClass extends Mapper<Text, Text, Text, Text> {
 	private Context context;
 	private long splitStart;
 
-	private static final Integer SPLIT_LENGTH = 4 + 99;
+	private static final Integer SPLIT_LENGTH = 26214400 + 99;
 
 	@Override
 	protected void setup(Context context) throws IOException,
@@ -99,6 +100,7 @@ public class MapperClass extends Mapper<Text, Text, Text, Text> {
 
 			if (j == ptrnLen) { //match occurs here 
 				loInteger.add(splitStart + (i - ptrnLen));
+			
 				j = b[j];
 			}
 		}

@@ -20,6 +20,7 @@ public class StringMatch {
 		}
 
 		Job job = Job.getInstance(new Configuration());
+		
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Text.class);
 

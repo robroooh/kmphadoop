@@ -4,6 +4,7 @@ import java.net.URISyntaxException;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
@@ -24,8 +25,8 @@ public class StringMatch {
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Text.class);
 
-		job.setMapOutputKeyClass(Text.class);
-		job.setMapOutputValueClass(Text.class);
+		job.setMapOutputKeyClass(BytesWritable.class);
+		job.setMapOutputValueClass(BytesWritable.class);
 				
 		job.setMapperClass(MapperClass.class);
 		job.setReducerClass(ReduceClass.class);

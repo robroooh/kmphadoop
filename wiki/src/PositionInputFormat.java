@@ -9,19 +9,20 @@ import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.InputSplit;
 import org.apache.hadoop.mapreduce.JobContext;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 
-public class PositionInputFormat extends FileInputFormat<Text, Text> {
+public class PositionInputFormat extends FileInputFormat<Text, BytesWritable> {
 
 	private static final Log LOG = LogFactory.getLog(FileInputFormat.class);
 	private static final double SPLIT_SLOP = 1.1;
 
 	@Override
-	public org.apache.hadoop.mapreduce.RecordReader<Text, Text> createRecordReader(
+	public org.apache.hadoop.mapreduce.RecordReader<Text, BytesWritable> createRecordReader(
 			org.apache.hadoop.mapreduce.InputSplit split,
 			TaskAttemptContext context) throws IOException,
 			InterruptedException {

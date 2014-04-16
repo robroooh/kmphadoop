@@ -9,6 +9,7 @@ import java.util.Scanner;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.InputSplit;
@@ -17,7 +18,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.input.FileSplit;
 
 public class PosRecordReader extends
-		org.apache.hadoop.mapreduce.RecordReader<Text, Text> {
+		org.apache.hadoop.mapreduce.RecordReader<Text, BytesWritable> {
 	private InputSplit split;
 	private TaskAttemptContext context;
 	private Path filePath;
@@ -25,7 +26,7 @@ public class PosRecordReader extends
 	private FileSystem fSystem;
 	private FSDataInputStream fsBigFile;
 	private Text key;
-	private Text value;
+	private BytesWritable value;
 	private int flag = 0;
 
 	private static final Integer SPLIT_LENGTH = 33550000 + 99;
@@ -61,7 +62,7 @@ public class PosRecordReader extends
 			key = new Text();
 		}
 		if (value == null) {
-			value = new Text();
+			value = new BytesWritable();
 		}
 		if (flag == 0) {
 
@@ -73,7 +74,7 @@ public class PosRecordReader extends
 
 			key.set(filePath.getName());
 
-			value.set(buffer);
+			value.set(buffer,0,SPLIT_LENGTH);
 
 			flag = 1;
 			return true;
@@ -89,7 +90,7 @@ public class PosRecordReader extends
 	}
 
 	@Override
-	public Text getCurrentValue() throws IOException, InterruptedException {
+	public BytesWritable getCurrentValue() throws IOException, InterruptedException {
 		return value;
 	}
 
